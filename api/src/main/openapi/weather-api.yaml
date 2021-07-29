@@ -1,6 +1,6 @@
 openapi: "3.0.1"
 info:
-  version: '0.1.0'
+  version: '0.2.0-SNAPSHOT'
   title: WEATHER API
 servers:
   - url: http://localhost:8080/
