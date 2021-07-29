@@ -1,0 +1,53 @@
+apply plugin: 'org.openapi.generator'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework:spring-webmvc'
+    implementation("io.springfox:springfox-swagger2:" + project["springfox.version"]) {
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+    }
+    implementation "org.openapitools:jackson-databind-nullable:0.1.0"
+}
+
+
+def generateOpenApi(String apiName) {
+    def taskName = "openApiGenerate${apiName}Api"
+
+    def task = tasks.create(name: taskName, type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+        generatorName = "spring"
+        inputSpec = "$projectDir/src/main/openapi/${apiName}-api.yaml".toString()
+        outputDir = "$buildDir/generated/${apiName}-server".toString()
+        apiPackage = "com.digamber.${apiName}.api.controllers"
+        modelPackage = "com.digamber.${apiName}.api.model"
+        modelNamePrefix = "Api"
+        configOptions = [
+                library          : 'spring-mvc',
+                dateLibrary      : 'java11',
+                java8            : "true",
+                delegatePattern  : "true",
+                useBeanValidation: "false",
+                useTags          : "true",
+                configPackage    : "com.digamber.dummy.${apiName}" // <- unused but must be different to other generators
+        ]
+    }
+    task.inputs.dir("$projectDir/src/main/openapi")
+    task.outputs.dir("$buildDir/generated/${apiName}-server")
+    sourceSets.main.java.srcDir("$buildDir/generated/${apiName}-server/src/main/java")
+    compileJava.dependsOn task
+}
+
+generateOpenApi("weather")
+
+task buildApiDocResources(type: Copy) {
+    from('src/main/openapi') {
+    }
+    into "${buildDir}/api-docs/api-docs"
+}
+
+sourceSets.main.resources.srcDir("${buildDir}/api-docs")
+processResources.dependsOn tasks.buildApiDocResources
+
+
+test {
+    useJUnitPlatform()
+}
