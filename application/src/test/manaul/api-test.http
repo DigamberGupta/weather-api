@@ -1,0 +1,8 @@
+###
+GET {{protocolHostAndPort}}/weeather/info/citys/Munich HTTP/1.1
+content-type: application/json
+Api-Key: {{apiKey}}
+
+###
+GET {{openweathermapHost}}/data/2.5/weather?q=Munich&appid={{openweathermapHost-api-key}}&units=metric HTTP/1.1
+content-type: application/json

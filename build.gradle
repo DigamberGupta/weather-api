@@ -1,0 +1,45 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:' + project['spring.boot.version']
+        classpath 'io.spring.gradle:dependency-management-plugin:' + project['spring.dependency-management.version']
+        classpath 'org.openapitools:openapi-generator-gradle-plugin:' + project['openapi-generator-gradle-plugin.version']
+    }
+}
+
+group 'com.digamber'
+version = project['version']
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "org.springframework.boot"
+
+    springBoot {
+        mainClassName = "com.digamber.${rootProject.name}.WeatherApplication"
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+}

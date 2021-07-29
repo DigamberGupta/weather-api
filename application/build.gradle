@@ -1,0 +1,9 @@
+apply plugin: "org.springframework.boot"
+
+dependencies {
+    implementation project(':api')
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation "org.springframework.boot:spring-boot-configuration-processor"
+    implementation 'org.springframework.boot:spring-boot-starter-cache:2.4.0'
+}

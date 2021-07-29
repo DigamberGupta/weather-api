@@ -1,0 +1,134 @@
+openapi: "3.0.1"
+info:
+  version: '0.1.0'
+  title: WEATHER API
+servers:
+  - url: http://localhost:8080/
+security:
+  - apiKey: []
+paths:
+  /weeather/info/citys/{cityName}:
+    get:
+      tags:
+        - weatherInfo
+      summary: get infomartion by providing cityname
+      operationId: getWeatherInfoByCity
+      parameters:
+        - name: cityName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/WeatherByCityResponse"
+        400:
+          description: BADREQUEST
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        404:
+          description: NOTFOUND
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        500:
+          description: SEREVER ERROR
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: API-KEY
+  schemas:
+    WeatherByCityResponse:
+      description: Weather information
+      properties:
+        title:
+          type: string
+        type:
+          type: object
+        properties:
+          $ref: '#/components/schemas/WeatherProperties'
+      required:
+        - title
+        - type
+        - properties
+
+    WeatherProperties:
+      description: Weather properties
+      properties:
+        condition:
+          $ref: '#/components/schemas/WeatherCondition'
+        temperature:
+          $ref: '#/components/schemas/WeatherTemperature'
+        wind_speed:
+          $ref: '#/components/schemas/WeatherWindSpeed'
+      required:
+        - condition
+        - temperature
+        - wind_speed
+
+    WeatherCondition:
+      description: Weather properties
+      properties:
+        type:
+          type: string
+        description:
+          type: string
+      required:
+        - type
+        - description
+
+    WeatherTemperature:
+      description: Weather properties
+      properties:
+        type:
+          type: number
+        description:
+          type: string
+      required:
+        - type
+        - description
+
+    WeatherWindSpeed:
+      description: Weather properties
+      properties:
+        type:
+          type: number
+        description:
+          type: string
+        minimum:
+          type: integer
+      required:
+        - type
+        - description
+        - minimum
+
+    ProblemDetail:
+      properties:
+        title:
+          type: string
+        detail:
+          type: string
+        type:
+          type: string
+        instance:
+          type: string
+        status:
+          type: integer
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetail'
